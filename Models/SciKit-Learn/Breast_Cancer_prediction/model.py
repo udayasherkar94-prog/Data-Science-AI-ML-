@@ -49,15 +49,46 @@ def outlier_visu(df):
     return df
 
 
+def encode_target(df):
+
+    encoder = LabelEncoder()
+
+    df["diagnosis"] = encoder.fit_transform(df["diagnosis"])
+
+    print("\nTarget mapping:")
+    print(dict(zip(
+        encoder.classes_,
+        encoder.transform(encoder.classes_)
+    )))
+
+    return df
+
+
+def prepare_data(df):
+
+    X = df.drop("diagnosis", axis=1)
+
+    y = df["diagnosis"]
+
+    return X, y
+
 def main():
 
     df = load_data()
 
     df = data_cleaning(df)
 
+    # Encode
+    df = encode_target(df)
+
+    # Visualize outliers
     df = outlier_visu(df)
 
-    print(df.head())
+    # Prepare X and y
+    X, y = prepare_data(df)
+
+    print("\nFeatures shape:", X.shape)
+    print("Target shape:", y.shape)
 
 
 if __name__ == "__main__":
